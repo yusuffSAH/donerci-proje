@@ -1,0 +1,26 @@
+@model List<MertcanDoner.Models.Address>
+
+<h2>Adreslerim</h2>
+<a class="btn btn-primary mb-3" asp-action="Create">Yeni Adres Ekle</a>
+
+@if (!Model.Any())
+{
+    <p>Hiç adresiniz yok.</p>
+}
+else
+{
+    <ul class="list-group">
+        @foreach (var address in Model)
+        {
+            <li class="list-group-item">
+                <strong>@address.Title:</strong> @address.FullAddress
+                @(address.IsDefault ? "(Varsayılan)" : "")
+                <form asp-action="Select" method="post" class="d-inline">
+                    <input type="hidden" name="id" value="@address.Id" />
+                    <button class="btn btn-sm btn-outline-primary">Bu adresi seç</button>
+                </form>
+            </li>
+            
+        }
+    </ul>
+}

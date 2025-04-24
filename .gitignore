@@ -1,0 +1,11 @@
+bin/
+obj/
+.vscode/
+*.user
+*.suo
+*.db
+*.DS_Store
+*.log
+.env
+*.sqlite
+wwwroot/lib/

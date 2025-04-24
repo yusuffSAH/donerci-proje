@@ -1,0 +1,22 @@
+@model IEnumerable<MertcanDoner.Models.Product>
+
+<h2>Menü</h2>
+
+<div class="row">
+    @foreach (var product in Model)
+    {
+        <div class="col-md-4 mb-4">
+            <div class="card h-100 shadow-sm">
+                <div class="card-body">
+                    <h5 class="card-title">@product.Name</h5>
+                    <p class="card-text">@product.Description</p>
+                    <p class="card-text"><strong>@product.Price ₺</strong></p>
+
+                    <a class="btn btn-primary w-100" asp-action="Details" asp-route-id="@product.Id">
+                            Ürünü Görüntüle
+                    </a>
+                </div>
+            </div>
+        </div>
+    }
+</div>

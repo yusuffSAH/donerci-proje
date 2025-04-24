@@ -1,0 +1,35 @@
+@model List<MertcanDoner.Models.Order>
+
+<h2>Siparişler</h2>
+
+@foreach (var order in Model)
+{
+    <div class="card mb-4">
+   <div class="card-header bg-dark text-white">
+    <strong>@order.User.FullName</strong><br />
+    📞 @order.User.Phone <br />
+    📍 @order.Address?.Title - @order.Address?.FullAddress <br />
+    🕒 @order.OrderDate.ToString("dd.MM.yyyy HH:mm")
+</div>
+
+        <div class="card-body">
+            @foreach (var item in order.Items)
+            {
+                <p>
+                    <strong>@item.Product.Name</strong> - @item.Quantity adet - @item.Price ₺
+                    <br />
+                    <small>Opsiyonlar: 
+                        @if (item.SelectedOptions != null && item.SelectedOptions.Any())
+                        {
+                            @string.Join(", ", item.SelectedOptions.Select(o => o.Name))
+                        }
+                        else
+                        {
+                            <em>Seçim yok</em>
+                        }
+                    </small>
+                </p>
+            }
+        </div>
+    </div>
+}

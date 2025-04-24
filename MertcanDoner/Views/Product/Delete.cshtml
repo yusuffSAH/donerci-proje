@@ -1,0 +1,13 @@
+@model MertcanDoner.Models.Product
+
+<h2>Ürünü Sil</h2>
+
+<h4>@Model.Name</h4>
+<p>@Model.Description</p>
+<p><strong>@Model.Price ₺</strong></p>
+
+<form asp-action="Delete">
+    <input type="hidden" asp-for="Id" />
+    <button type="submit" class="btn btn-danger">Evet, Sil</button>
+    <a asp-action="Index" class="btn btn-secondary">İptal</a>
+</form>
