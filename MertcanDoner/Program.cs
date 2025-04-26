@@ -3,7 +3,8 @@ using MertcanDoner.Models;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using MertcanDoner.Services;
-
+using MertcanDoner.Hubs;
+using Microsoft.AspNetCore.SignalR;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -12,6 +13,8 @@ builder.Services.AddDbContext<AppDbContext>(options =>
 
 
 builder.Services.AddRazorPages();
+builder.Services.AddSignalR();
+builder.Services.AddSingleton<IUserIdProvider, NameIdentifierProvider>();
 
 // Identity sistemi (kullanıcı giriş/rol yönetimi)
 builder.Services.AddDefaultIdentity<ApplicationUser>(options => 
@@ -47,6 +50,7 @@ app.UseSession();
 app.MapControllerRoute(
     name: "default",
     pattern: "{controller=Userview}/{action=Index}/{id?}");
+    app.MapHub<NotificationHub>("/notificationHub");
 
 app.MapRazorPages();
 using (var scope = app.Services.CreateScope())

@@ -1,50 +1,55 @@
-@model List<MertcanDoner.Models.Order>
+@model MertcanDoner.ViewModels.UserOrderViewModel
 
 @{
     ViewData["Title"] = "Sipariş Geçmişim";
 }
 
-<h2 class="mb-4">🧾 Sipariş Geçmişim</h2>
 
-@if (!Model.Any())
+<h2 class="mb-4">🧾 Siparişlerim</h2>
+
+@if (!Model.ActiveOrders.Any() && !Model.PastOrders.Any())
 {
     <div class="alert alert-info">Henüz hiç sipariş vermemişsiniz.</div>
 }
 else
 {
-    @foreach (var order in Model)
+    @if (Model.ActiveOrders.Any())
     {
-        <div class="card mb-4">
-            <div class="card-header bg-primary text-white">
-                <strong>Sipariş Tarihi:</strong> @order.OrderDate.ToString("dd.MM.yyyy HH:mm")
-            </div>
-            <div class="card-header bg-primary text-white">
-    <strong>@order.User.FullName</strong><br />
-    📞 @order.User.Phone <br />
-    📍  @order.Address?.Title - @order.Address?.FullAddress <br />
-    🕒 @order.OrderDate.ToString("dd.MM.yyyy HH:mm")
-</div>
-            <div class="card-body">
-                @foreach (var item in order.Items)
-                {
-                    <p>
-                        <strong>@item.Product.Name</strong> - @item.Quantity adet - @item.Price ₺
-                        <br />
-                        <small>
-                            <strong>Opsiyonlar:</strong>
-                            @if (item.SelectedOptions != null && item.SelectedOptions.Any())
-                            {
-                                @string.Join(", ", item.SelectedOptions.Select(o => o.Name))
-                            }
-                            else
-                            {
-                                <em>Seçim yapılmadı</em>
-                            }
-                        </small>
-                    </p>
-                    <hr />
-                }
-            </div>
-        </div>
+        <h4 class="text-primary">📦 Aktif Siparişler</h4>
+        @foreach (var order in Model.ActiveOrders)
+        {
+           @await Html.PartialAsync("_UserOrderCard", order)
+        }
+    }
+
+    @if (Model.PastOrders.Any())
+    {
+        <h4 class="mt-4 text-secondary">📁 Geçmiş Siparişler</h4>
+        @foreach (var order in Model.PastOrders)
+        {
+           @await Html.PartialAsync("_UserOrderCard", order)
+        }
     }
 }
+<script src="https://cdnjs.cloudflare.com/ajax/libs/microsoft-signalr/7.0.5/signalr.min.js"></script>
+<script>
+    const connection = new signalR.HubConnectionBuilder()
+        .withUrl("/notificationHub")
+        .build();
+
+    // 🎵 Ses dosyasını yükle
+    const notificationSound = new Audio('/sounds/male-you-have-new-message-tone.mp3'); // 📁 /wwwroot/sounds/notify.mp3 olmalı
+
+    // ✅ Bildirim geldiğinde yapılacaklar
+    connection.on("ReceiveNotification", function (message) {
+        notificationSound.play(); // 🔊 sesi çal
+        alert("📢 " + message);   // 🟡 bildirim kutusu
+        location.reload();        // 🔄 sayfayı yenile
+    });
+
+    // 🔄 Bağlantıyı başlat
+    connection.start().catch(function (err) {
+        console.error("SignalR bağlantı hatası:", err.toString());
+    });
+</script>
+

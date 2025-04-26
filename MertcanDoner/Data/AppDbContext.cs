@@ -21,6 +21,9 @@ namespace MertcanDoner.Data
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             base.OnModelCreating(modelBuilder);
+             modelBuilder.Entity<Order>()
+                .Property(o => o.Status)
+                .HasConversion<string>();
 
             // Ürün silinince, geçmiş siparişin bozulmaması için bağlantıyı kopar ama siparişi silme
             modelBuilder.Entity<OrderItem>()

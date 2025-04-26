@@ -5,7 +5,8 @@ using Newtonsoft.Json;
 using Microsoft.AspNetCore.Authorization;
 using System.Security.Claims;
 using MertcanDoner.Services;
-
+using Microsoft.AspNetCore.SignalR;
+using MertcanDoner.Hubs;
 namespace MertcanDoner.Controllers
 {
     [Authorize]
@@ -13,12 +14,14 @@ namespace MertcanDoner.Controllers
     {
         private readonly AppDbContext _context;
         private readonly FakePaymentService _paymentService;
+        private readonly IHubContext<NotificationHub> _hubContext;
 
 
-        public PaymentController(AppDbContext context, FakePaymentService paymentService)
+        public PaymentController(AppDbContext context, FakePaymentService paymentService,IHubContext<NotificationHub> hubContext)
         {
             _context = context;
-              _paymentService = paymentService;
+            _paymentService = paymentService;
+            _hubContext = hubContext;
         }
 
         public IActionResult Index()
@@ -31,87 +34,80 @@ namespace MertcanDoner.Controllers
             return View(cart);
         }
         [HttpPost]
-        public IActionResult Checkout(PaymentViewModel model)
-        {
+            public async Task<IActionResult> Checkout(PaymentViewModel model)
+          {
     // 1. Sepet kontrolü
-          var cart = JsonConvert.DeserializeObject<List<CartItem>>(model.CartItemsJson);
-             if (cart == null || !cart.Any())
-             {
-                return RedirectToAction("Index", "Userview");
-             }
-              
-    // 2. Kart bilgisi kontrolü (Fake ödeme API simülasyonu)
-                var paymentResult = _paymentService.ProcessPayment(
+            var cart = JsonConvert.DeserializeObject<List<CartItem>>(model.CartItemsJson);
+            if (cart == null || !cart.Any())
+            {
+                ModelState.AddModelError(string.Empty, "Sepetiniz boş. Lütfen ürün ekleyin.");
+                return View("Index", new List<CartItem>());
+            }
+
+            // 2. Kart bilgisi kontrolü (Fake ödeme API simülasyonu)
+            var paymentResult = _paymentService.ProcessPayment(
                 model.CardNumber,
                 model.Expiration,
                 model.CVV,
                 model.CardName
-                );
+            );
 
             if (!paymentResult)
             {
                 ModelState.AddModelError(string.Empty, "Ödeme başarısız. Lütfen kart bilgilerinizi kontrol edin.");
-
-            // tekrar sepeti göstermek için deserialize et
-            var css = JsonConvert.DeserializeObject<List<CartItem>>(model.CartItemsJson);
-
-            // formun tekrar gösterilmesi için aynı ViewModel'deki cart'ı inject et
-            ViewBag.CartItems = css;
-
-            return View("Index", css); // aynı sayfaya dön
+                ViewBag.CartItems = cart;
+                return View("Index", cart);
             }
-            
-
 
             // 3. Siparişi kaydet
             var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
             var selectedAddressId = HttpContext.Session.GetInt32("SelectedAddressId");
-                
-                    if (selectedAddressId == null)
-                    {
-                        TempData["Error"] = "Sipariş verebilmek için önce bir adres seçmelisiniz.";
-                        return RedirectToAction("Index", "Address");
-                    }
-            
+
+            if (selectedAddressId == null)
+            {
+                TempData["Error"] = "Sipariş verebilmek için önce bir adres seçmelisiniz.";
+                return RedirectToAction("Index", "Address");
+            }
 
             var order = new Order
             {
                 UserId = userId,
                 OrderDate = DateTime.Now,
                 AddressId = selectedAddressId.Value,
+                Status = OrderStatus.Pending,
                 Items = new List<OrderItem>()
             };
 
-       foreach (var item in cart)
-        {
-            var orderItem = new OrderItem
+            foreach (var item in cart)
             {
-                ProductId = item.ProductId ?? 0,
-                Quantity = item.Quantity ?? 1,
-                Price = item.Product?.Price ?? 0,
-                SelectedOptions = new List<SelectedOption>()
-            };
+                var orderItem = new OrderItem
+                {
+                    ProductId = item.ProductId ?? 0,
+                    Quantity = item.Quantity ?? 1,
+                    Price = item.Product?.Price ?? 0,
+                    SelectedOptions = new List<SelectedOption>()
+                };
 
-            if (item.SelectedOptions != null)
-            {
-             foreach (var option in item.SelectedOptions)
-             {
-            orderItem.SelectedOptions.Add(new SelectedOption
-            {
-                Name = option
-            });
-             }
-     }
+                if (item.SelectedOptions != null)
+                {
+                    foreach (var option in item.SelectedOptions)
+                    {
+                        orderItem.SelectedOptions.Add(new SelectedOption { Name = option });
+                    }
+                }
 
-    order.Items.Add(orderItem);
-}
-        _context.Orders.Add(order);
-        _context.SaveChanges();
+                order.Items.Add(orderItem);
+            }
 
-        HttpContext.Session.Remove("CartData");
+            _context.Orders.Add(order);
+            _context.SaveChanges();
 
-        return RedirectToAction("Success");
-    }
+            await _hubContext.Clients.Group("Admins").SendAsync("ReceiveNotification", "Yeni bir sipariş geldi!");
+
+            HttpContext.Session.Remove("CartData");
+
+            return RedirectToAction("Success");
+        }
 
 
         

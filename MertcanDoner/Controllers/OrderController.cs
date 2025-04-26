@@ -6,6 +6,8 @@ using MertcanDoner.Models;
 using Microsoft.AspNetCore.Identity;
 using System.Security.Claims;
 
+using MertcanDoner.ViewModels;
+
 namespace MertcanDoner.Controllers
 {
     
@@ -19,40 +21,36 @@ namespace MertcanDoner.Controllers
             _context = context;
             _userManager = userManager;
         }
-            [Authorize(Roles = "Admin")]
-        public IActionResult Index()
-        {
-            var orders = _context.Orders
-            .Include(o => o.Address)
-                .Include(o => o.Items)
-                .ThenInclude(i => i.Product)
-                .Include(o => o.Items)
-                .ThenInclude(i => i.SelectedOptions)
-                .Include(o => o.User)
-                .OrderByDescending(o => o.OrderDate)
-                .Include(o => o.User)
-                .ToList();
-
-            return View(orders);
-        }
-        [Authorize]
-public IActionResult MyOrders()
-{
-    var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
-
-    var orders = _context.Orders
-            .Where(o => o.UserId == userId)
-            .Include(o => o.Address)
-            .Include(o => o.Items)
-            .ThenInclude(i => i.Product)
-            .Include(o => o.Items)
-            .ThenInclude(i => i.SelectedOptions)
-            .OrderByDescending(o => o.OrderDate)
-             .Include(o => o.User)
-            .ToList();
             
+        [Authorize]
+    public IActionResult MyOrders()
+    {
+        var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
 
-    return View(orders);
-}
+        var allOrders = _context.Orders
+        .Where(o => o.UserId == userId)
+        .Include(o => o.Address)
+        .Include(o => o.Items)
+            .ThenInclude(i => i.Product)
+        .Include(o => o.Items)
+            .ThenInclude(i => i.SelectedOptions)
+        .Include(o => o.User)
+        .OrderByDescending(o => o.OrderDate)
+        .ToList();
+
+        var viewModel = new UserOrderViewModel
+    {
+        ActiveOrders = allOrders
+            .Where(o => o.Status == OrderStatus.Pending || o.Status == OrderStatus.Accepted || o.Status == OrderStatus.Shipped)
+            .ToList(),
+
+        PastOrders = allOrders
+            .Where(o => o.Status == OrderStatus.Delivered || o.Status == OrderStatus.Cancelled)
+            .ToList()
+    };
+                
+
+        return View(viewModel);
     }
-}
+        }
+    }

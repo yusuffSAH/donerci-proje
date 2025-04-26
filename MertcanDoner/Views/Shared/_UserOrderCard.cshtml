@@ -1,0 +1,86 @@
+@model MertcanDoner.Models.Order
+
+@{
+    var durumRenk = Model.Status switch
+    {
+        OrderStatus.Pending => "warning",
+        OrderStatus.Accepted => "info",
+        OrderStatus.Shipped => "primary",
+        OrderStatus.Delivered => "success",
+        OrderStatus.Cancelled => "danger",
+        _ => "secondary"
+    };
+
+    var durumYazi = Model.Status switch
+    {
+        OrderStatus.Pending => "Hazırlanıyor",
+        OrderStatus.Accepted => "Yola Çıkıyor",
+        OrderStatus.Shipped => "Yolda",
+        OrderStatus.Delivered => "Teslim Edildi",
+        OrderStatus.Cancelled => "İptal Edildi",
+        _ => Model.Status.ToString()
+    };
+}
+
+<div class="card mb-3 border-@durumRenk shadow-sm">
+    <div class="card-body">
+        <div class="d-flex justify-content-between">
+            <div>
+                <strong>#@Model.Id</strong> - @Model.User?.FullName
+                <span class="badge bg-@durumRenk ms-2">@durumYazi</span>
+                <br />
+                <small>@Model.OrderDate.ToString("dd.MM.yyyy HH:mm")</small>
+            </div>
+            <div class="text-end">
+                <p class="mb-1"><strong>Adres:</strong> @Model.Address?.Title</p>
+                <p class="mb-1"><strong>Ürün:</strong> @Model.Items.Count adet</p>
+                <a class="btn btn-sm btn-outline-primary" data-bs-toggle="collapse" href="#order-details-@Model.Id">
+                    <i class="bi bi-eye"></i> Detaylar
+                </a>
+            </div>
+        </div>
+
+        <div class="collapse mt-3" id="order-details-@Model.Id">
+            <div class="border-top pt-2">
+                <p><strong>📞 Tel:</strong> @Model.User?.Phone</p>
+                <p><strong>📍 Adres:</strong> @Model.Address?.FullAddress</p>
+                <hr />
+                @foreach (var item in Model.Items)
+                {
+                    <div class="mb-2">
+                        <strong>@item.Product?.Name</strong> × @item.Quantity — @item.Price ₺ <br />
+                        <small>Opsiyonlar:
+                            @if (item.SelectedOptions?.Any() == true)
+                            {
+                                @string.Join(", ", item.SelectedOptions.Select(o => o.Name))
+                            }
+                            else
+                            {
+                                <em>Seçim yapılmadı</em>
+                            }
+                        </small>
+                    </div>
+                }
+            </div>
+            <hr />
+            <div class="text-muted small">
+                @if (Model.AcceptedAt != null)
+                {
+                    <p><strong>📌 Kabul Edildi:</strong> @Model.AcceptedAt?.ToString("dd.MM.yyyy HH:mm")</p>
+                }
+                @if (Model.ShippedAt != null)
+                {
+                    <p><strong>🚚 Yola Çıktı:</strong> @Model.ShippedAt?.ToString("dd.MM.yyyy HH:mm")</p>
+                }
+                @if (Model.DeliveredAt != null)
+                {
+                    <p><strong>✅ Teslim Edildi:</strong> @Model.DeliveredAt?.ToString("dd.MM.yyyy HH:mm")</p>
+                }
+                @if (Model.CancelledAt != null)
+                {
+                    <p><strong>❌ İptal Edildi:</strong> @Model.CancelledAt?.ToString("dd.MM.yyyy HH:mm")</p>
+                }
+</div>
+        </div>
+    </div>
+</div>

@@ -1,0 +1,133 @@
+@model MertcanDoner.Models.Order
+
+@{
+    var durumRenk = Model.Status switch
+{
+    OrderStatus.Pending => "warning",
+    OrderStatus.Accepted => "info",
+    OrderStatus.Shipped => "primary",
+    OrderStatus.Delivered => "success",
+    OrderStatus.Cancelled => "danger",
+    _ => "secondary"
+};
+
+   var durumYazi = Model.Status switch
+{
+    OrderStatus.Pending => "Beklemede",
+    OrderStatus.Accepted => "Yola Çıkıyor", // görünüm böyle
+    OrderStatus.Shipped => "Yolda",
+    OrderStatus.Delivered => "Teslim Edildi",
+    OrderStatus.Cancelled => "İptal Edildi",
+    _ => Model.Status.ToString()
+};
+
+}
+
+<div class="card mb-2 border-@durumRenk shadow-sm">
+    <div class="card-body py-2 px-3">
+        <div class="d-flex justify-content-between align-items-center">
+            <div>
+                <strong>#@Model.Id</strong> - @Model.User?.FullName
+                <span class="badge bg-@durumRenk ms-2">@durumYazi</span>
+                <br />
+                <small class="text-muted">@Model.OrderDate.ToString("dd.MM.yyyy HH:mm")</small>
+            </div>
+            <div class="text-end">
+                <p class="mb-1"><strong>Adres:</strong> @Model.Address?.Title</p>
+                <p class="mb-1"><strong>Ürün:</strong> @Model.Items.Count adet</p>
+            </div>
+        </div>
+
+        <!-- 🛈 Detaylar Butonu -->
+        <div class="mt-2 text-end">
+            <a class="btn btn-sm btn-outline-primary" data-bs-toggle="collapse" href="#order-details-@Model.Id" role="button">
+                <i class="bi bi-eye"></i> Detaylar
+            </a>
+        </div>
+
+        <!-- 🔽 Detaylar Paneli -->
+        <div class="collapse mt-3" id="order-details-@Model.Id">
+    <div class="border-top pt-2">
+        <p><strong>📞 Tel:</strong> @Model.User?.Phone</p>
+        <p><strong>📍 Adres:</strong> @Model.Address?.FullAddress</p>
+        <p><strong></strong></p>
+        <hr />
+        @foreach (var item in Model.Items)
+        {
+            <div class="mb-2">
+                <strong>@item.Product?.Name</strong> × @item.Quantity — @item.Price ₺ <br />
+                <small>Opsiyonlar:
+                    @if (item.SelectedOptions?.Any() == true)
+                    {
+                        @string.Join(", ", item.SelectedOptions.Select(o => o.Name))
+                    }
+                    else
+                    {
+                        <em>Seçim yapılmadı</em>
+                    }
+                </small>
+            </div>
+        }
+        <hr />
+<div class="text-end fw-bold text-success">
+    💰 Toplam: @Model.Items.Sum(i => i.Price * i.Quantity) ₺
+</div>
+        <!-- 🔧 STATÜ ZAMANLARI -->
+        <hr />
+        <div class="text-muted small">
+            @if (Model.AcceptedAt != null)
+            {
+                <p><strong>📌 Kabul Edildi:</strong> @Model.AcceptedAt?.ToString("dd.MM.yyyy HH:mm")</p>
+            }
+            @if (Model.ShippedAt != null)
+            {
+                <p><strong>🚚 Yola Çıktı:</strong> @Model.ShippedAt?.ToString("dd.MM.yyyy HH:mm")</p>
+            }
+            @if (Model.DeliveredAt != null)
+            {
+                <p><strong>✅ Teslim Edildi:</strong> @Model.DeliveredAt?.ToString("dd.MM.yyyy HH:mm")</p>
+            }
+            @if (Model.CancelledAt != null)
+            {
+                <p><strong>❌ İptal Edildi:</strong> @Model.CancelledAt?.ToString("dd.MM.yyyy HH:mm")</p>
+            }
+        </div>
+    </div>
+</div>
+
+       <div class="mt-3">
+    <p class="fw-semibold">🛠️ İşlem:</p>
+
+    @if (Model.Status == OrderStatus.Pending)
+    {
+        <form asp-action="ChangeStatus" method="post" class="d-flex gap-2">
+            <input type="hidden" name="orderId" value="@Model.Id" />
+            <button name="newStatus" value="Accepted" class="btn btn-sm btn-success">Kabul Et</button>
+            <button name="newStatus" value="Cancelled" class="btn btn-sm btn-danger">İptal Et</button>
+        </form>
+    }
+    else if (Model.Status == OrderStatus.Accepted)
+    {
+        <form asp-action="ChangeStatus" method="post" class="d-flex gap-2">
+            <input type="hidden" name="orderId" value="@Model.Id" />
+            <button name="newStatus" value="Shipped" class="btn btn-sm btn-primary">Yola Çıkar</button>
+        </form>
+    }
+    else if (Model.Status == OrderStatus.Shipped)
+    {
+        <form asp-action="ChangeStatus" method="post" class="d-flex gap-2">
+            <input type="hidden" name="orderId" value="@Model.Id" />
+            <button name="newStatus" value="Delivered" class="btn btn-sm btn-success">Teslim Edildi</button>
+        </form>
+    }
+    else if (Model.Status == OrderStatus.Delivered)
+    {
+        <p class="text-muted">✅ Teslim Edildi</p>
+    }
+    else if (Model.Status == OrderStatus.Cancelled)
+    {
+        <p class="text-danger">❌ İptal Edildi</p>
+    }
+</div>
+    </div>
+</div>
