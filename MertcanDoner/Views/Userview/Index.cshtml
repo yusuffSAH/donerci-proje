@@ -1,6 +1,25 @@
 @model IEnumerable<MertcanDoner.Models.Product>
 
+@{
+    ViewData["Title"] = "Menü";
+    var currentCategory = Context.Request.Query["category"].ToString();
+}
+
 <h2>Menü</h2>
+
+<div class="mb-3">
+    <form method="get" asp-action="Index">
+        <select name="category" onchange="this.form.submit()" class="form-select w-auto d-inline-block">
+            <option value="">Tüm Ürünler</option>
+            @foreach (var cat in ViewBag.Categories as List<string>)
+            {
+                <option value="@cat" selected="@(currentCategory == cat ? "selected" : null)">
+                    @cat
+                </option>
+            }
+        </select>
+    </form>
+</div>
 
 <div class="row">
     @foreach (var product in Model)
@@ -13,7 +32,7 @@
                     <p class="card-text"><strong>@product.Price ₺</strong></p>
 
                     <a class="btn btn-primary w-100" asp-action="Details" asp-route-id="@product.Id">
-                            Ürünü Görüntüle
+                        Ürünü Görüntüle
                     </a>
                 </div>
             </div>

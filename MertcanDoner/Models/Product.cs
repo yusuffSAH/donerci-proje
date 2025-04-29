@@ -13,6 +13,7 @@ namespace MertcanDoner.Models
         public decimal? Price { get; set; }         // Fiyat
         public string? ImageUrl { get; set; }       // Ürün resmi
         public List<ProductOption> Options { get; set; } = new();
+        public string? Category { get; set; }  // Örn: Döner, İçecek, Menü
 
     }
 }

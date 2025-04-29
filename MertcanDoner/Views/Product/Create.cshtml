@@ -37,5 +37,13 @@
         <span asp-validation-for="OptionsRaw" class="text-danger"></span>
     </div>
 
+    <div class="mb-3"></div>
+    <label class="form-label">Kategori</label>
+     <input asp-for="Category" class="form-control" placeholder="Örn: Döner, İçecek, Tatlı">
+    <span asp-validation-for="Category" class="text-danger"></span>
+    
+    <span asp-validation-for="Category" class="text-danger"></span>
+</div>
+
     <button type="submit" class="btn btn-primary">Kaydet</button>
 </form>

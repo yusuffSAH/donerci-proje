@@ -22,7 +22,7 @@ namespace MertcanDoner.Models
 
     public DateTime OrderDate { get; set; }
     public int? AddressId { get; set; }
-    public Address Address { get; set; }
+    public Address? Address { get; set; }
     public List<OrderItem> Items { get; set; } = new();
     public OrderStatus Status { get; set; } = OrderStatus.Pending;
     public DateTime? AcceptedAt { get; set; }

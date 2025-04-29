@@ -11,10 +11,15 @@ namespace MertcanDoner.Models
 
         [Required]
         public decimal Price { get; set; }
+        [Required]
+        public string Category { get; set; } = "";
 
         public string? ImageUrl { get; set; }
 
         // Adminin yazacağı opsiyonlar (virgülle ayrılmış: Domates, Ketçap, Mayonez)
         public string? OptionsRaw { get; set; }
+        
+
+        
     }
 }

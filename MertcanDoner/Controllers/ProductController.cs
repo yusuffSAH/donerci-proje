@@ -40,6 +40,7 @@ public IActionResult Create(ProductCreateViewModel model)
         Name = model.Name,
         Description = model.Description,
         Price = model.Price,
+        Category = model.Category,
         ImageUrl = model.ImageUrl,
         Options = new List<ProductOption>()
     };
