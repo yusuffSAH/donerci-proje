@@ -1,0 +1,89 @@
+/* Admin Product List Page Styles */
+.admin-list-container {
+    max-width: 1200px;
+    margin: 2rem auto;
+    padding: 2rem;
+    background-color: #e0ffcd;
+}
+
+.admin-list-container h2 {
+    color: #333;
+    margin-bottom: 2rem;
+    font-weight: 600;
+    font-size: 1.8rem;
+}
+
+.table {
+    width: 100%;
+    background: white;
+    border: 1px solid #d0e0c0;
+}
+
+.table thead th {
+    background: #f0f8e0;
+    color: #333;
+    font-weight: 600;
+    padding: 1rem;
+    text-align: left;
+    border-bottom: 1px solid #d0e0c0;
+}
+
+.table tbody td {
+    padding: 1rem;
+    border-bottom: 1px solid #d0e0c0;
+    color: #333;
+}
+
+.table tbody tr:hover {
+    background-color: #f0f8e0;
+}
+
+.btn-primary {
+    background: #f0f8e0;
+    border: 1px solid #d0e0c0;
+    padding: 0.75rem 1.5rem;
+    color: #333;
+    font-weight: 500;
+    font-size: 0.95rem;
+    text-decoration: none;
+    display: inline-block;
+    margin-bottom: 1.5rem;
+}
+
+.btn-primary:hover {
+    background: #e0ffcd;
+    color: #333;
+    text-decoration: none;
+}
+
+.btn-danger {
+    background: #f0f8e0;
+    border: 1px solid #d0e0c0;
+    padding: 0.5rem 1rem;
+    color: #333;
+    font-weight: 500;
+    font-size: 0.85rem;
+}
+
+.btn-danger:hover {
+    background: #e0ffcd;
+    color: #333;
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+    .admin-list-container {
+        margin: 1rem;
+        padding: 1.5rem;
+    }
+    
+    .table {
+        display: block;
+        overflow-x: auto;
+    }
+    
+    .btn-primary {
+        width: 100%;
+        text-align: center;
+    }
+} 

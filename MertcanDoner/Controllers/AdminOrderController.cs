@@ -21,51 +21,51 @@ namespace MertcanDoner.Controllers
             _hubContext = hubContext;
         }
 
-public IActionResult Index(DateTime? filterDate)
-{
-   var orders = _context.Orders
-    .Include(o => o.User)
-    .Include(o => o.Address)
-    .Include(o => o.Items)
-        .ThenInclude(i => i.Product)
-    .Include(o => o.Items)
-        .ThenInclude(i => i.SelectedOptions) 
-    .ToList();
+        public IActionResult Index(DateTime? filterDate)
+        {
+            var orders = _context.Orders
+            .Include(o => o.User)
+            .Include(o => o.Address)
+            .Include(o => o.Items)
+                .ThenInclude(i => i.Product)
+            .Include(o => o.Items)
+                .ThenInclude(i => i.SelectedOptions) 
+            .ToList();
 
         
 
-    // ViewModel kullanmak daha düzenli olur
-    var viewModel = new AdminOrderViewModel
-    {
+            // ViewModel kullanmak daha düzenli olur
+            var viewModel = new AdminOrderViewModel
+            {
 
-        FilterDate = filterDate,
+                FilterDate = filterDate,
 
-        PendingOrders = orders
-            .Where(o => o.Status == OrderStatus.Pending)
-            .OrderByDescending(o => o.OrderDate)
-            .ToList(),
+                PendingOrders = orders
+                    .Where(o => o.Status == OrderStatus.Pending)
+                    .OrderByDescending(o => o.OrderDate)
+                    .ToList(),
 
-        AcceptedAndShippedOrders = orders
-            .Where(o => (o.Status == OrderStatus.Accepted || o.Status == OrderStatus.Shipped))
-            .OrderByDescending(o => o.OrderDate)
-            .ToList(),
+                AcceptedAndShippedOrders = orders
+                    .Where(o => (o.Status == OrderStatus.Accepted || o.Status == OrderStatus.Shipped))
+                    .OrderByDescending(o => o.OrderDate)
+                    .ToList(),
 
-        DeliveredOrders = orders
-            .Where(o => o.Status == OrderStatus.Delivered &&
-                        (!filterDate.HasValue || o.DeliveredAt?.Date == filterDate.Value.Date))
-            .OrderByDescending(o => o.OrderDate)
-            .ToList(),
+                DeliveredOrders = orders
+                    .Where(o => o.Status == OrderStatus.Delivered &&
+                                (!filterDate.HasValue || o.DeliveredAt?.Date == filterDate.Value.Date))
+                    .OrderByDescending(o => o.OrderDate)
+                    .ToList(),
 
-        CancelledOrders = orders
-            .Where(o => o.Status == OrderStatus.Cancelled &&
-                        (!filterDate.HasValue || o.CancelledAt?.Date == filterDate.Value.Date))
-            .OrderByDescending(o => o.OrderDate)
-            .ToList()
-    };
+                CancelledOrders = orders
+                    .Where(o => o.Status == OrderStatus.Cancelled &&
+                                (!filterDate.HasValue || o.CancelledAt?.Date == filterDate.Value.Date))
+                    .OrderByDescending(o => o.OrderDate)
+                    .ToList()
+            };
 
 
-    return View(viewModel);
-}      
+                return View(viewModel);
+        }      
 
         [HttpPost]
         public async Task<IActionResult> ChangeStatus(int orderId, OrderStatus newStatus)

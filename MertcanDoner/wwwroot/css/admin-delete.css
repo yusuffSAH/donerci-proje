@@ -1,0 +1,81 @@
+/* Admin Delete Page Styles */
+.admin-delete-container {
+    max-width: 600px;
+    margin: 2rem auto;
+    padding: 2rem;
+    background-color: #e0ffcd;
+}
+
+.admin-delete-container h2 {
+    color: #333;
+    margin-bottom: 1.5rem;
+    font-weight: 600;
+    font-size: 1.8rem;
+}
+
+.admin-delete-container h4 {
+    color: #333;
+    margin-bottom: 1rem;
+    font-weight: 500;
+    font-size: 1.4rem;
+}
+
+.admin-delete-container p {
+    color: #333;
+    margin-bottom: 0.5rem;
+    font-size: 1rem;
+}
+
+.admin-delete-container strong {
+    color: #333;
+    font-weight: 600;
+}
+
+.form-group {
+    margin-top: 2rem;
+}
+
+.btn-danger {
+    background: #f0f8e0;
+    border: 1px solid #d0e0c0;
+    padding: 0.75rem 1.5rem;
+    color: #333;
+    font-weight: 500;
+    font-size: 0.95rem;
+    margin-right: 1rem;
+}
+
+.btn-danger:hover {
+    background: #e0ffcd;
+    color: #333;
+}
+
+.btn-secondary {
+    background: #f0f8e0;
+    border: 1px solid #d0e0c0;
+    padding: 0.75rem 1.5rem;
+    color: #333;
+    font-weight: 500;
+    font-size: 0.95rem;
+    text-decoration: none;
+}
+
+.btn-secondary:hover {
+    background: #e0ffcd;
+    color: #333;
+    text-decoration: none;
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+    .admin-delete-container {
+        margin: 1rem;
+        padding: 1.5rem;
+    }
+    
+    .btn-danger, .btn-secondary {
+        width: 100%;
+        margin-bottom: 1rem;
+        text-align: center;
+    }
+} 

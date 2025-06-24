@@ -37,7 +37,7 @@ namespace MertcanDoner.Controllers
         public IActionResult Create(Address address)
         {
             ModelState.Remove("User");
-ModelState.Remove("UserId");
+            ModelState.Remove("UserId");
             var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
             address.UserId = userId;
 

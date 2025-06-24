@@ -46,3 +46,134 @@ button.accept-policy {
   white-space: nowrap;
   line-height: 60px;
 }
+
+/* Modern Footer Styles */
+.footer-section {
+  background-color: #f8f9fa;
+  color: #495057;
+  border-top: 1px solid #e5e5e5;
+  padding: 2rem 0 0 0;
+  margin-top: 3rem;
+}
+
+.footer-logo h3 {
+  color: #343a40;
+  font-weight: 600;
+}
+
+.footer-logo p {
+  font-size: 0.9rem;
+  color: #6c757d;
+}
+
+.footer-heading {
+  font-size: 1.2rem;
+  font-weight: 600;
+  color: #343a40;
+  margin-bottom: 1.2rem;
+  position: relative;
+  padding-bottom: 0.5rem;
+}
+
+.footer-heading:after {
+  content: '';
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  width: 40px;
+  height: 2px;
+  background-color: #dc3545;
+}
+
+.footer-links {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.footer-links li {
+  padding: 0.4rem 0;
+}
+
+.footer-links a {
+  color: #495057;
+  text-decoration: none;
+  transition: all 0.3s ease;
+}
+
+.footer-links a:hover {
+  color: #dc3545;
+  text-decoration: none;
+  padding-left: 5px;
+}
+
+.social-icons a {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  background-color: #e9ecef;
+  color: #495057;
+  transition: all 0.3s ease;
+}
+
+.social-icons a:hover {
+  background-color: #dc3545;
+  color: white;
+  transform: translateY(-3px);
+}
+
+.app-buttons .btn {
+  width: 150px;
+  text-align: left;
+  border-radius: 4px;
+  transition: all 0.3s ease;
+}
+
+.app-buttons .btn:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+}
+
+.divider {
+  margin: 1rem 0;
+  border-top: 1px solid #dee2e6;
+  opacity: 0.5;
+}
+
+.bottom-links {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  display: flex;
+  flex-wrap: wrap;
+}
+
+.bottom-links li {
+  margin-right: 1.5rem;
+  margin-bottom: 0.5rem;
+}
+
+.bottom-links a {
+  color: #6c757d;
+  font-size: 0.85rem;
+  text-decoration: none;
+  transition: color 0.3s ease;
+}
+
+.bottom-links a:hover {
+  color: #dc3545;
+}
+
+.copyright {
+  font-size: 0.85rem;
+  color: #6c757d;
+  margin-bottom: 0;
+}
+
+.designer {
+  color: #dc3545;
+  font-weight: 500;
+}

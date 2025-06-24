@@ -1,13 +1,17 @@
 @model MertcanDoner.Models.Product
 
-<h2>Ürünü Sil</h2>
+<link rel="stylesheet" href="~/css/admin-delete.css" />
 
-<h4>@Model.Name</h4>
-<p>@Model.Description</p>
-<p><strong>@Model.Price ₺</strong></p>
+<div class="admin-delete-container">
+    <h2>Ürünü Sil</h2>
 
-<form asp-action="Delete">
-    <input type="hidden" asp-for="Id" />
-    <button type="submit" class="btn btn-danger">Evet, Sil</button>
-    <a asp-action="Index" class="btn btn-secondary">İptal</a>
-</form>
+    <h4>@Model.Name</h4>
+    <p>@Model.Description</p>
+    <p><strong>@Model.Price ₺</strong></p>
+
+    <form asp-action="Delete" class="form-group">
+        <input type="hidden" asp-for="Id" />
+        <button type="submit" class="btn btn-danger">Evet, Sil</button>
+        <a asp-action="Index" class="btn btn-secondary">İptal</a>
+    </form>
+</div>

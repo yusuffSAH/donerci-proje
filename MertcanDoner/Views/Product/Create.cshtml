@@ -4,38 +4,50 @@
     ViewData["Title"] = "Ürün Oluştur";
 }
 
-<h2>Yeni Ürün Oluştur</h2>
+<link rel="stylesheet" href="~/css/admin-product.css" />
 
-<form asp-action="Create" method="post">
-    <div class="mb-3">
-        <label asp-for="Name" class="form-label"></label>
-        <input asp-for="Name" class="form-control" />
-        <span asp-validation-for="Name" class="text-danger"></span>
-    </div>
+<div class="admin-product-container">
+    <h2>Yeni Ürün Oluştur</h2>
 
-    <div class="mb-3">
-        <label asp-for="Description" class="form-label"></label>
-        <input asp-for="Description" class="form-control" />
-        <span asp-validation-for="Description" class="text-danger"></span>
-    </div>
+    <form asp-action="Create" method="post">
+        <div class="mb-3">
+            <label asp-for="Name" class="form-label">Ürün Adı</label>
+            <input asp-for="Name" class="form-control" placeholder="Ürün adını giriniz" />
+            <span asp-validation-for="Name" class="text-danger"></span>
+        </div>
 
-    <div class="mb-3">
-        <label asp-for="Price" class="form-label"></label>
-        <input asp-for="Price" class="form-control" />
-        <span asp-validation-for="Price" class="text-danger"></span>
-    </div>
+        <div class="mb-3">
+            <label asp-for="Description" class="form-label">Açıklama</label>
+            <input asp-for="Description" class="form-control" placeholder="Ürün açıklamasını giriniz" />
+            <span asp-validation-for="Description" class="text-danger"></span>
+        </div>
 
-    <div class="mb-3">
-        <label asp-for="ImageUrl" class="form-label"></label>
-        <input asp-for="ImageUrl" class="form-control" />
-        <span asp-validation-for="ImageUrl" class="text-danger"></span>
-    </div>
+        <div class="mb-3">
+            <label asp-for="Price" class="form-label">Fiyat</label>
+            <input asp-for="Price" class="form-control" placeholder="Ürün fiyatını giriniz" />
+            <span asp-validation-for="Price" class="text-danger"></span>
+        </div>
 
-    <div class="mb-3">
-        <label asp-for="OptionsRaw" class="form-label">Opsiyonlar (virgülle ayır)</label>
-        <input asp-for="OptionsRaw" class="form-control" placeholder="Domates, Ketçap, Mayonez" />
-        <span asp-validation-for="OptionsRaw" class="text-danger"></span>
-    </div>
+        <div class="mb-3">
+            <label asp-for="ImageUrl" class="form-label">Resim URL</label>
+            <input asp-for="ImageUrl" class="form-control" placeholder="Resim URL'sini giriniz" />
+            <span asp-validation-for="ImageUrl" class="text-danger"></span>
+        </div>
 
-    <button type="submit" class="btn btn-primary">Kaydet</button>
-</form>
+        <div class="mb-3">
+            <label asp-for="OptionsRaw" class="form-label">Opsiyonlar</label>
+            <input asp-for="OptionsRaw" class="form-control" placeholder="Domates, Ketçap, Mayonez" />
+            <span asp-validation-for="OptionsRaw" class="text-danger"></span>
+        </div>
+
+        <div class="mb-3">
+            <label asp-for="Category" class="form-label">Kategori</label>
+            <input asp-for="Category" class="form-control" placeholder="Örn: Döner, İçecek, Tatlı" />
+            <span asp-validation-for="Category" class="text-danger"></span>
+        </div>
+
+        <div class="text-center">
+            <button type="submit" class="btn btn-primary">Ürünü Kaydet</button>
+        </div>
+    </form>
+</div>

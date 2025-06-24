@@ -4,28 +4,52 @@
     ViewData["Title"] = "Ürün Detayı";
 }
 
-<h2>@Model.Name</h2>
-<p>@Model.Description</p>
-<p><strong>Fiyat:</strong> @Model.Price ₺</p>
+@section Styles {
+    <link rel="stylesheet" href="~/css/product-details.css" />
+}
 
-<form asp-controller="Cart" asp-action="AddToCart" method="post">
-    <input type="hidden" name="productId" value="@Model.Id" />
+<div class="product-details-container">
+    <div class="product-details-card">
+        <div class="product-image-container">
+            @if (!string.IsNullOrEmpty(Model.ImageUrl))
+            {
+                <img src="@Model.ImageUrl" alt="@Model.Name" class="img-fluid">
+            }
+            else
+            {
+                <div class="no-image">
+                    <i class="fas fa-utensils"></i>
+                </div>
+            }
+        </div>
+        <div class="product-info">
+            <h1 class="product-title">@Model.Name</h1>
+            <p class="product-description">@Model.Description</p>
+            <div class="product-price">@Model.Price ₺</div>
 
-    <div class="mb-3">
-        <label>Malzeme Seç:</label><br />
-        @foreach (var option in Model.Options)
-        {
-            <div class="form-check">
-                <input class="form-check-input" type="checkbox" name="selectedOptions" value="@option.Name" id="@option.Id" />
-                <label class="form-check-label" for="@option.Id">@option.Name</label>
-            </div>
-        }
+            <form asp-controller="Cart" asp-action="AddToCart" method="post">
+                <input type="hidden" name="productId" value="@Model.Id" />
+
+                <div class="options-section">
+                    <h3 class="options-title">Malzeme Seçenekleri</h3>
+                    @foreach (var option in Model.Options)
+                    {
+                        <div class="option-item">
+                            <input class="form-check-input" type="checkbox" name="selectedOptions" value="@option.Name" id="@option.Id" />
+                            <label class="form-check-label" for="@option.Id">@option.Name</label>
+                        </div>
+                    }
+                </div>
+
+                <div class="quantity-section">
+                    <label for="quantity">Adet:</label>
+                    <input type="number" id="quantity" name="quantity" value="1" class="quantity-input" min="1" />
+                </div>
+
+                <button type="submit" class="add-to-cart-btn">
+                    <i class="fas fa-shopping-cart me-2"></i>Sepete Ekle
+                </button>
+            </form>
+        </div>
     </div>
-
-    <div class="mb-3">
-        <label>Adet:</label>
-        <input type="number" name="quantity" value="1" class="form-control" min="1" />
-    </div>
-
-    <button type="submit" class="btn btn-success">Sepete Ekle</button>
-</form>
+</div>

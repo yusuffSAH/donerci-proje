@@ -1,26 +1,34 @@
 @model List<MertcanDoner.Models.Address>
 
-<h2>Adreslerim</h2>
-<a class="btn btn-primary mb-3" asp-action="Create">Yeni Adres Ekle</a>
+<link rel="stylesheet" href="~/css/address.css" />
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" />
 
-@if (!Model.Any())
-{
-    <p>Hiç adresiniz yok.</p>
-}
-else
-{
-    <ul class="list-group">
-        @foreach (var address in Model)
-        {
-            <li class="list-group-item">
-                <strong>@address.Title:</strong> @address.FullAddress
-                @(address.IsDefault ? "(Varsayılan)" : "")
-                <form asp-action="Select" method="post" class="d-inline">
-                    <input type="hidden" name="id" value="@address.Id" />
-                    <button class="btn btn-sm btn-outline-primary">Bu adresi seç</button>
-                </form>
-            </li>
-            
-        }
-    </ul>
-}
+<div class="address-container">
+    <h2>Adreslerim</h2>
+    <a class="btn btn-primary" asp-action="Create">Yeni Adres Ekle</a>
+
+    @if (!Model.Any())
+    {
+        <p>Hiç adresiniz yok.</p>
+    }
+    else
+    {
+        <ul class="list-group">
+            @foreach (var address in Model)
+            {
+                <li class="list-group-item">
+                    <div class="address-title">@address.Title</div>
+                    <div class="address-content">@address.FullAddress</div>
+                    @if (address.IsDefault)
+                    {
+                        <div class="address-default">Varsayılan Adres</div>
+                    }
+                    <form asp-action="Select" method="post" class="d-inline">
+                        <input type="hidden" name="id" value="@address.Id" />
+                        <button class="btn btn-outline-primary">Bu adresi seç</button>
+                    </form>
+                </li>
+            }
+        </ul>
+    }
+</div>

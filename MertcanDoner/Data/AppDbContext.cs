@@ -29,7 +29,7 @@ namespace MertcanDoner.Data
             modelBuilder.Entity<OrderItem>()
                 .HasOne(oi => oi.Product)
                 .WithMany()
-                .OnDelete(DeleteBehavior.Restrict);
+                .OnDelete(DeleteBehavior.SetNull);
 
             // Kullanıcı silinirse siparişler kalsın
             modelBuilder.Entity<Order>()

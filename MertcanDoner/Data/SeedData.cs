@@ -16,13 +16,11 @@ namespace MertcanDoner.Data
             string adminEmail = "admin@donerci.com";
             string adminPassword = "Admin123!";
 
-            // 1. Admin rolü yoksa oluştur
             if (!await roleManager.RoleExistsAsync("Admin"))
             {
                 await roleManager.CreateAsync(new IdentityRole("Admin"));
             }
 
-            // 2. Admin kullanıcı zaten var mı kontrol et
             var adminUser = await userManager.FindByEmailAsync(adminEmail);
             if (adminUser == null)
             {

@@ -1,22 +1,61 @@
 @model IEnumerable<MertcanDoner.Models.Product>
 
-<h2>Menü</h2>
+@{
+    ViewData["Title"] = "Menü";
+    var currentCategory = Context.Request.Query["category"].ToString();
+}
 
-<div class="row">
-    @foreach (var product in Model)
-    {
-        <div class="col-md-4 mb-4">
-            <div class="card h-100 shadow-sm">
-                <div class="card-body">
-                    <h5 class="card-title">@product.Name</h5>
-                    <p class="card-text">@product.Description</p>
-                    <p class="card-text"><strong>@product.Price ₺</strong></p>
+@section Styles {
+    <link rel="stylesheet" href="~/css/menu.css" />
+}
 
-                    <a class="btn btn-primary w-100" asp-action="Details" asp-route-id="@product.Id">
-                            Ürünü Görüntüle
-                    </a>
+<div class="menu-container">
+    <div class="menu-header">
+        <h1 class="menu-title">Menü</h1>
+        <div class="category-filter">
+            <form method="get" asp-action="Index">
+                <select name="category" onchange="this.form.submit()" class="form-select">
+                    <option value="">Tüm Ürünler</option>
+                    @foreach (var cat in ViewBag.Categories as List<string>)
+                    {
+                        <option value="@cat" selected="@(currentCategory == cat ? "selected" : null)">
+                            @cat
+                        </option>
+                    }
+                </select>
+            </form>
+        </div>
+    </div>
+
+    <div class="row g-4">
+        @foreach (var product in Model)
+        {
+            <div class="col-md-4">
+                <div class="product-card">
+                    <div class="product-image">
+                        @if (!string.IsNullOrEmpty(product.ImageUrl))
+                        {
+                            <img src="@product.ImageUrl" alt="@product.Name" class="img-fluid">
+                        }
+                        else
+                        {
+                            <div class="no-image">
+                                <i class="fas fa-utensils"></i>
+                            </div>
+                        }
+                    </div>
+                    <div class="product-body">
+                        <h3 class="product-title">@product.Name</h3>
+                        <p class="product-description">@product.Description</p>
+                        <div class="product-footer">
+                            <span class="product-price">@product.Price ₺</span>
+                            <a asp-action="Details" asp-route-id="@product.Id" class="btn btn-primary">
+                                <i class="fas fa-eye me-2"></i>Ürünü Görüntüle
+                            </a>
+                        </div>
+                    </div>
                 </div>
             </div>
-        </div>
-    }
+        }
+    </div>
 </div>

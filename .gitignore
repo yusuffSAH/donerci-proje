@@ -9,3 +9,5 @@ obj/
 .env
 *.sqlite
 wwwroot/lib/
+MertcanDoner/appsettings.json
+MertcanDoner/appsettings.Development.json

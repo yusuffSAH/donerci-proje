@@ -1,0 +1,127 @@
+@{
+    ViewData["Title"] = "İletişim";
+}
+
+<div class="container py-5">
+    <div class="row">
+        <div class="col-lg-5 mb-4 mb-lg-0">
+            <h2 class="mb-4">İletişim Bilgileri</h2>
+            
+            <div class="card shadow-sm mb-4">
+                <div class="card-body">
+                    <h4 class="text-danger mb-4">Bize Ulaşın</h4>
+                    
+                    <div class="d-flex mb-4">
+                        <div class="flex-shrink-0">
+                            <i class="fas fa-phone-alt fa-2x text-danger"></i>
+                        </div>
+                        <div class="ms-3">
+                            <h5 class="mt-0">Telefon</h5>
+                            <p class="mb-0">Sipariş Hattı: <span class="text-primary">0370 725 11 92</span></p>
+                            <p class="mb-0">Müşteri Hizmetleri: 0370 725 11 93</p>
+                        </div>
+                    </div>
+                    
+                    <div class="d-flex mb-4">
+                        <div class="flex-shrink-0">
+                            <i class="fas fa-envelope fa-2x text-danger"></i>
+                        </div>
+                        <div class="ms-3">
+                            <h5 class="mt-0">E-posta</h5>
+                            <p class="mb-0">info@mertcandoner.com</p>
+                            <p class="mb-0">destek@mertcandoner.com</p>
+                        </div>
+                    </div>
+                    
+                    <div class="d-flex mb-4">
+                        <div class="flex-shrink-0">
+                            <i class="fas fa-map-marker-alt fa-2x text-danger"></i>
+                        </div>
+                        <div class="ms-3">
+                            <h5 class="mt-0">Adres</h5>
+                            <p class="mb-0">Yeni Mahalle, Ana Cadde No:123, Karabük</p>
+                            <p class="mb-0">78600 Karabük</p>
+                        </div>
+                    </div>
+                    
+                    <div class="d-flex">
+                        <div class="flex-shrink-0">
+                            <i class="fas fa-clock fa-2x text-danger"></i>
+                        </div>
+                        <div class="ms-3">
+                            <h5 class="mt-0">Çalışma Saatleri</h5>
+                            <p class="mb-0">Haftaiçi: 10:00 - 22:00</p>
+                            <p class="mb-0">Haftasonu: 11:00 - 23:00</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="card shadow-sm">
+                <div class="card-body">
+                    <h5 class="card-title">Sosyal Medya</h5>
+                    <div class="social-icons my-3">
+                        <a href="#" class="me-3"><i class="fab fa-facebook-f fa-lg"></i></a>
+                        <a href="#" class="me-3"><i class="fab fa-instagram fa-lg"></i></a>
+                        <a href="#" class="me-3"><i class="fab fa-youtube fa-lg"></i></a>
+                        <a href="#"><i class="fab fa-twitter fa-lg"></i></a>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="col-lg-7">
+            <h2 class="mb-4">İletişim Formu</h2>
+            
+            <div class="card shadow-sm">
+                <div class="card-body">
+                    <form>
+                        <div class="row">
+                            <div class="col-md-6 mb-3">
+                                <label for="name" class="form-label">Adınız Soyadınız <span class="text-danger">*</span></label>
+                                <input type="text" class="form-control" id="name" required>
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                <label for="email" class="form-label">E-posta <span class="text-danger">*</span></label>
+                                <input type="email" class="form-control" id="email" required>
+                            </div>
+                        </div>
+                        
+                        <div class="mb-3">
+                            <label for="phone" class="form-label">Telefon</label>
+                            <input type="tel" class="form-control" id="phone">
+                        </div>
+                        
+                        <div class="mb-3">
+                            <label for="subject" class="form-label">Konu <span class="text-danger">*</span></label>
+                            <select class="form-select" id="subject" required>
+                                <option value="" selected disabled>Konu Seçiniz</option>
+                                <option value="siparis">Sipariş Hakkında</option>
+                                <option value="urun">Ürünler Hakkında</option>
+                                <option value="oneri">Öneri / Şikayet</option>
+                                <option value="franchise">Franchise Bilgisi</option>
+                                <option value="diger">Diğer</option>
+                            </select>
+                        </div>
+                        
+                        <div class="mb-3">
+                            <label for="message" class="form-label">Mesajınız <span class="text-danger">*</span></label>
+                            <textarea class="form-control" id="message" rows="5" required></textarea>
+                        </div>
+                        
+                        <div class="mb-3 form-check">
+                            <input type="checkbox" class="form-check-input" id="privacy" required>
+                            <label class="form-check-label" for="privacy">
+                                <a href="/Footer/Privacy" class="text-decoration-none">Gizlilik Politikası</a>'nı okudum ve kabul ediyorum.
+                            </label>
+                        </div>
+                        
+                        <div class="text-end">
+                            <button type="submit" class="btn btn-danger">Gönder</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

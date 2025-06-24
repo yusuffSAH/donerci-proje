@@ -1,6 +1,7 @@
 using Microsoft.AspNetCore.Mvc;
 using MertcanDoner.Data;
 using Microsoft.EntityFrameworkCore;
+using MertcanDoner.Models;
 
 namespace MertcanDoner.Controllers
 {
@@ -13,10 +14,23 @@ namespace MertcanDoner.Controllers
             _context = context;
         }
 
-        public IActionResult Index()
+        public IActionResult Index(string? category)
         {
-            var products = _context.Products.ToList();
-            return View(products);
+           var products = _context.Products.AsQueryable();
+
+            if (!string.IsNullOrEmpty(category))
+            {
+            products = products.Where(p => p.Category == category);
+            }
+
+            var categories = _context.Products
+            .Select(p => p.Category)
+            .Distinct()
+            .ToList();
+
+            ViewBag.Categories = categories;
+
+             return View(products.ToList());
         }
         public IActionResult Details(int id)
         {
@@ -29,7 +43,8 @@ namespace MertcanDoner.Controllers
         return NotFound();
         }
 
-    return View(product);
+        return View(product);
         }
+       
     }
 }

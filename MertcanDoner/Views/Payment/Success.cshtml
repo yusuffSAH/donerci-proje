@@ -1,3 +1,16 @@
-<h2>Siparişiniz alınmıştır ✅</h2>
-<p>Teşekkür ederiz! Siparişiniz başarıyla kaydedildi.</p>
-<a asp-controller="Userview" asp-action="Index" class="btn btn-outline-primary">Menüye Dön</a>
+@section Styles {
+    <link rel="stylesheet" href="~/css/account.css" />
+}
+
+<div class="account-container">
+    <div class="account-card success-container">
+        <div class="success-icon">
+            <i class="fas fa-check-circle"></i>
+        </div>
+        <h2 class="success-message">Siparişiniz alınmıştır</h2>
+        <p class="text-muted mb-4">Teşekkür ederiz! Siparişiniz başarıyla kaydedildi.</p>
+        <a asp-controller="Userview" asp-action="Index" class="btn btn-primary">
+            <i class="fas fa-utensils me-2"></i>Menüye Dön
+        </a>
+    </div>
+</div>

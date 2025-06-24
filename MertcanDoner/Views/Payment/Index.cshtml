@@ -3,69 +3,229 @@
 
 @{
     var cartJson = Newtonsoft.Json.JsonConvert.SerializeObject(Model);
+    var totalAmount = Model.Sum(x => (x.Product?.Price ?? 0) * (x.Quantity ?? 1));
 }
 
-<h2>Sipariş ve Ödeme</h2>
-
-@if (!ViewData.ModelState.IsValid)
-{
-    <div class="alert alert-danger">
-        @foreach (var error in ViewData.ModelState.Values.SelectMany(v => v.Errors))
-        {
-            <p>@error.ErrorMessage</p>
+@section Styles {
+    <link rel="stylesheet" href="~/css/account.css" />
+    <style>
+        /* Stripe kart alanı stili */
+        .StripeElement {
+            box-sizing: border-box;
+            height: 40px;
+            padding: 10px 12px;
+            border: 1px solid #ced4da;
+            border-radius: 8px;
+            background-color: white;
+            box-shadow: 0 1px 3px 0 #e6ebf1;
+            -webkit-transition: box-shadow 150ms ease;
+            transition: box-shadow 150ms ease;
         }
-    </div>
+
+        .StripeElement--focus {
+            box-shadow: 0 1px 3px 0 #cfd7df;
+        }
+
+        .StripeElement--invalid {
+            border-color: #fa755a;
+        }
+
+        .StripeElement--webkit-autofill {
+            background-color: #fefde5 !important;
+        }
+
+        #card-element {
+            margin-bottom: 1rem;
+        }
+    </style>
 }
 
-<form asp-action="Checkout" method="post">
-    <input type="hidden" name="CartItemsJson" value='@cartJson' />
+<div class="account-container">
+    <div class="account-card">
+        <h2><i class="fas fa-credit-card me-2"></i>Sipariş ve Ödeme</h2>
 
-    <div class="row">
-        <div class="col-md-6">
-            <h4>Sepet</h4>
-            <table class="table">
-                <thead>
-                    <tr>
-                        <th>Ürün</th>
-                        <th>Adet</th>
-                        <th>Fiyat</th>
-                        <th>Toplam</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    @foreach (var item in Model)
-                    {
-                        <tr>
-                            <td>@item.Product?.Name</td>
-                            <td>@item.Quantity</td>
-                            <td>@item.Product?.Price ₺</td>
-                            <td>@(item.Product?.Price * item.Quantity) ₺</td>
-                        </tr>
-                    }
-                </tbody>
-            </table>
-        </div>
+        @if (!ViewData.ModelState.IsValid)
+        {
+            <div class="alert alert-danger">
+                @foreach (var error in ViewData.ModelState.Values.SelectMany(v => v.Errors))
+                {
+                    <p><i class="fas fa-exclamation-circle me-2"></i>@error.ErrorMessage</p>
+                }
+            </div>
+        }
 
-        <div class="col-md-6">
-            <h4>Kart Bilgileri</h4>
-            <div class="form-group mb-2">
-                <label>Ad Soyad</label>
-                <input name="CardName" class="form-control" required />
-            </div>
-            <div class="form-group mb-2">
-                <label>Kart Numarası</label>
-                <input name="CardNumber" class="form-control" maxlength="16" required />
-            </div>
-            <div class="form-group mb-2">
-                <label>Son Kullanma Tarihi</label>
-                <input name="Expiration" placeholder="MM/YY" class="form-control" required />
-            </div>
-            <div class="form-group mb-4">
-                <label>CVV</label>
-                <input name="CVV" class="form-control" maxlength="4" required />
-            </div>
+        <form id="payment-form" asp-action="Checkout" method="post">
+            <input type="hidden" name="CartItemsJson" value='@cartJson' />
+            <input type="hidden" id="paymentIntentId" name="PaymentIntentId" />
 
-            <button type="submit" class="btn btn-primary w-100">Siparişi Tamamla</button>
-        </div>
+            <div class="row">
+                <div class="col-md-6">
+                    <div class="account-card">
+                        <h4><i class="fas fa-shopping-basket me-2"></i>Sepet</h4>
+                        <div class="table-responsive">
+                            <table class="table">
+                                <thead>
+                                    <tr>
+                                        <th>Ürün</th>
+                                        <th>Adet</th>
+                                        <th>Fiyat</th>
+                                        <th>Toplam</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    @foreach (var item in Model)
+                                    {
+                                        <tr>
+                                            <td>@item.Product?.Name</td>
+                                            <td>@item.Quantity</td>
+                                            <td>@item.Product?.Price ₺</td>
+                                            <td>@(item.Product?.Price * item.Quantity) ₺</td>
+                                        </tr>
+                                    }
+                                </tbody>
+                                <tfoot>
+                                    <tr>
+                                        <td colspan="3" class="text-end"><strong>Toplam:</strong></td>
+                                        <td><strong>@totalAmount ₺</strong></td>
+                                    </tr>
+                                </tfoot>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-md-6">
+                    <div class="account-card">
+                        <h4><i class="fas fa-credit-card me-2"></i>Kart Bilgileri</h4>
+                        <div class="form-floating mb-3">
+                            <input id="cardholder-name" class="form-control" placeholder="Ad Soyad" required />
+                            <label>Ad Soyad</label>
+                        </div>
+                        <div class="form-group mb-3">
+                            <label class="form-label">Kart Bilgileri</label>
+                            <div id="card-element" class="form-control"></div>
+                        </div>
+                        <div id="card-errors" class="alert alert-danger d-none" role="alert"></div>
+
+                        <button type="submit" class="btn btn-primary w-100" id="submit-button">
+                            <i class="fas fa-check me-2"></i>Siparişi Tamamla
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </form>
     </div>
-</form>
+</div>
+
+@section Scripts {
+    <script src="https://js.stripe.com/v3/"></script>
+    <script>
+        document.addEventListener("DOMContentLoaded", function () {
+            var publishableKey = "@ViewBag.StripePublishableKey";
+
+            if (!publishableKey || publishableKey.trim() === "") {
+                console.error("Stripe publishable key is missing.");
+                return;
+            }
+
+            var stripe = Stripe(publishableKey);
+            var elements = stripe.elements();
+
+            var card = elements.create('card', {
+                style: {
+                    base: {
+                        fontSize: '16px',
+                        color: '#32325d',
+                        '::placeholder': {
+                            color: '#aab7c4'
+                        }
+                    },
+                    invalid: {
+                        color: '#fa755a',
+                        iconColor: '#fa755a'
+                    }
+                }
+            });
+
+            card.mount('#card-element');
+
+            card.on('change', function (event) {
+                var displayError = document.getElementById('card-errors');
+                if (event.error) {
+                    displayError.textContent = event.error.message;
+                    displayError.classList.remove('d-none');
+                } else {
+                    displayError.textContent = '';
+                    displayError.classList.add('d-none');
+                }
+            });
+
+            var form = document.getElementById('payment-form');
+            var submitButton = document.getElementById('submit-button');
+
+            form.addEventListener('submit', function (event) {
+                event.preventDefault();
+                submitButton.disabled = true;
+
+                stripe.createPaymentMethod({
+                    type: 'card',
+                    card: card,
+                    billing_details: {
+                        name: document.getElementById('cardholder-name').value,
+                        address: {
+                            postal_code: '34000'
+                        }
+                    }
+                }).then(function (result) {
+                    if (result.error) {
+                        var errorElement = document.getElementById('card-errors');
+                        errorElement.textContent = result.error.message;
+                        errorElement.classList.remove('d-none');
+                        submitButton.disabled = false;
+                    } else {
+                        fetch('/Payment/CreatePaymentIntent', {
+                            method: 'POST',
+                            headers: {
+                                'Content-Type': 'application/json',
+                            },
+                            body: JSON.stringify({
+                                paymentMethodId: result.paymentMethod.id
+                            })
+                        })
+                        .then(response => response.json())
+                        .then(data => {
+                            if (data.error) {
+                                var errorElement = document.getElementById('card-errors');
+                                errorElement.textContent = data.error;
+                                errorElement.classList.remove('d-none');
+                                submitButton.disabled = false;
+                            } else {
+                                // 🔥 CONFIRM PAYMENT STEP
+                                stripe.confirmCardPayment(data.paymentIntentClientSecret, {
+                                    payment_method: result.paymentMethod.id
+                                }).then(function (confirmResult) {
+                                    if (confirmResult.error) {
+                                        var errorElement = document.getElementById('card-errors');
+                                        errorElement.textContent = confirmResult.error.message;
+                                        errorElement.classList.remove('d-none');
+                                        submitButton.disabled = false;
+                                    } else {
+                                        // Başarılı ödeme sonrası form submit
+                                        document.getElementById('paymentIntentId').value = confirmResult.paymentIntent.id;
+                                        form.submit();
+                                    }
+                                });
+                            }
+                        })
+                        .catch(error => {
+                            var errorElement = document.getElementById('card-errors');
+                            errorElement.textContent = "Bir hata oluştu: " + error;
+                            errorElement.classList.remove('d-none');
+                            submitButton.disabled = false;
+                        });
+                    }
+                });
+            });
+        });
+    </script>
+}

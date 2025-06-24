@@ -1,68 +1,74 @@
 @model MertcanDoner.Models.ViewModels.AdminOrderViewModel
 
+@section Styles {
+    <link rel="stylesheet" href="~/css/admin-orders.css" />
+}
 
-
-
-<div class="row">
-    <!-- SOLDA: BEKLEYENLER -->
-    <div class="col-md-6">
-        <h4 class="text-warning">🕒 Bekleyen Siparişler</h4>
-        @foreach (var order in Model.PendingOrders)
-        {
-            @await Html.PartialAsync("_OrderCard", order)
-        }
+<div class="orders-container">
+    <div class="orders-header">
+        <h2>Sipariş Yönetimi</h2>
+        <form method="get" asp-action="Index" class="orders-filter">
+            <label for="filterDate">Tarih Seçin:</label>
+            <input type="date" id="filterDate" name="filterDate" value="@Model.FilterDate?.ToString("yyyy-MM-dd")" />
+            <button type="submit" class="btn btn-primary">Filtrele</button>
+            <a href="@Url.Action("Index")" class="btn btn-secondary">Temizle</a>
+        </form>
     </div>
 
-    <!-- SAĞDA: YOLA ÇIKARILACAKLAR -->
-    <div class="col-md-6">
-        <h4 class="text-info">🚚 Hazırlanan / Yolda Siparişler</h4>
-        @foreach (var order in Model.AcceptedAndShippedOrders)
-        {
-            @await Html.PartialAsync("_OrderCard", order)
-        }
+    <div class="orders-grid">
+        <!-- BEKLEYEN SİPARİŞLER -->
+        <div class="orders-column pending">
+            <h4><i class="fas fa-clock"></i> Bekleyen Siparişler</h4>
+            @foreach (var order in Model.PendingOrders)
+            {
+                @await Html.PartialAsync("_OrderCard", order)
+            }
+        </div>
+
+        <!-- HAZIRLANAN SİPARİŞLER -->
+        <div class="orders-column preparing">
+            <h4><i class="fas fa-truck"></i> Hazırlanan / Yolda Siparişler</h4>
+            @foreach (var order in Model.AcceptedAndShippedOrders)
+            {
+                @await Html.PartialAsync("_OrderCard", order)
+            }
+        </div>
+
+        <!-- TESLİM EDİLEN SİPARİŞLER -->
+        <div class="orders-column delivered">
+            <h4><i class="fas fa-check-circle"></i> Teslim Edilenler</h4>
+            @foreach (var order in Model.DeliveredOrders)
+            {
+                @await Html.PartialAsync("_OrderCard", order)
+            }
+        </div>
+
+        <!-- İPTAL EDİLEN SİPARİŞLER -->
+        <div class="orders-column cancelled">
+            <h4><i class="fas fa-times-circle"></i> İptal Edilenler</h4>
+            @foreach (var order in Model.CancelledOrders)
+            {
+                @await Html.PartialAsync("_OrderCard", order)
+            }
+        </div>
     </div>
 </div>
-<form method="get" asp-action="Index" class="mb-4">
-    <label for="filterDate">Tarih seç:</label>
-    <input type="date" id="filterDate" name="filterDate" value="@Model.FilterDate?.ToString("yyyy-MM-dd")" class="form-control d-inline-block w-auto" />
-    <button type="submit" class="btn btn-sm btn-primary">Filtrele</button>
-    <a href="@Url.Action("Index")" class="btn btn-sm btn-secondary">Temizle</a>
-</form>
 
-<!-- ALTA: TESLİM EDİLEN ve İPTAL EDİLENLER -->
-<div class="row mt-4">
-    <div class="col-md-6">
-        <h5 class="text-success">✅ Teslim Edilenler</h5>
-        @foreach (var order in Model.DeliveredOrders)
-        {
-            @await Html.PartialAsync("_OrderCard", order)
-        }
-    </div>
-
-    <div class="col-md-6">
-        <h5 class="text-danger">❌ İptal Edilenler</h5>
-        @foreach (var order in Model.CancelledOrders)
-        {
-            @await Html.PartialAsync("_OrderCard", order)
-        }
-    </div>
-</div>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/microsoft-signalr/7.0.5/signalr.min.js"></script>
-    <script>
-        const connection = new signalR.HubConnectionBuilder()
-            .withUrl("/notificationHub")
-            .build();
+<script>
+    const connection = new signalR.HubConnectionBuilder()
+        .withUrl("/notificationHub")
+        .build();
 
-        // 🔊 Ses dosyasını hazırla
-        const notificationSound = new Audio('/sounds/its-for-you-asmr-soft-voice.mp3');
+    const notificationSound = new Audio('/sounds/its-for-you-asmr-soft-voice.mp3');
 
-        connection.on("ReceiveNotification", function (message) {
-            notificationSound.play(); // 🔊 Sesi çal
-            alert("📢 " + message);
-            location.reload(); // Sayfayı yenile
-        });
+    connection.on("ReceiveNotification", function (message) {
+        notificationSound.play();
+        alert("📢 " + message);
+        location.reload();
+    });
 
-        connection.start().catch(function (err) {
-            return console.error(err.toString());
-        });
-    </script>
+    connection.start().catch(function (err) {
+        return console.error(err.toString());
+    });
+</script>
